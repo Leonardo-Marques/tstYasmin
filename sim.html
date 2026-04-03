@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a1a0f">
     <title>Sabia!</title>
     <style>
         * {
@@ -12,12 +13,12 @@
         }
 
         body {
-            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #0a1a0f 0%, #1a3a2a 50%, #0d2818 100%);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
             overflow: hidden;
             position: relative;
         }
@@ -48,16 +49,24 @@
             z-index: 1;
             background: rgba(20, 45, 30, 0.85);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(80, 220, 130, 0.25);
             border-radius: 24px;
-            padding: 56px 56px;
+            padding: 40px 28px;
             text-align: center;
             box-shadow:
                 0 0 80px rgba(50, 180, 100, 0.15),
                 0 25px 50px rgba(0, 0, 0, 0.4);
-            max-width: 520px;
-            width: 90%;
+            max-width: 420px;
+            width: calc(100% - 32px);
             animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @media (min-width: 480px) {
+            .card {
+                padding: 56px 56px;
+                max-width: 520px;
+            }
         }
 
         @keyframes cardIn {
@@ -66,10 +75,14 @@
         }
 
         .celebration {
-            font-size: 56px;
-            margin-bottom: 20px;
+            font-size: 48px;
+            margin-bottom: 16px;
             display: inline-block;
             animation: bounce 0.6s cubic-bezier(0.16, 1, 0.3, 1) both 0.3s;
+        }
+
+        @media (min-width: 480px) {
+            .celebration { font-size: 56px; }
         }
 
         @keyframes bounce {
@@ -80,19 +93,27 @@
 
         h1 {
             color: #34d399;
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 700;
             margin-bottom: 8px;
             animation: fadeUp 0.6s ease both 0.5s;
         }
 
+        @media (min-width: 480px) {
+            h1 { font-size: 26px; }
+        }
+
         .message {
             color: #e0fff0;
-            font-size: 32px;
+            font-size: 26px;
             font-weight: 600;
             line-height: 1.4;
-            margin-top: 24px;
+            margin-top: 20px;
             animation: fadeUp 0.6s ease both 0.7s;
+        }
+
+        @media (min-width: 480px) {
+            .message { font-size: 32px; margin-top: 24px; }
         }
 
         .highlight {
@@ -103,7 +124,7 @@
         .detail {
             color: rgba(180, 230, 200, 0.6);
             font-size: 14px;
-            margin-top: 28px;
+            margin-top: 24px;
             animation: fadeUp 0.6s ease both 0.9s;
         }
 
@@ -163,11 +184,14 @@
     </div>
 
     <script>
-        // Confetti
+        const isMobile = window.innerWidth < 600;
+
+        // Confetti (menos no mobile)
         const confettiContainer = document.getElementById('confetti');
         const greens = ['#34d399', '#10b981', '#059669', '#6ee7b7', '#a7f3d0', '#d1fae5', '#ffffff'];
+        const confettiCount = isMobile ? 30 : 60;
 
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < confettiCount; i++) {
             const c = document.createElement('div');
             c.className = 'confetti';
             c.style.left = Math.random() * 100 + '%';
@@ -183,8 +207,9 @@
         // Floating hearts
         const heartsContainer = document.getElementById('hearts');
         const heartEmojis = ['💚', '🤍', '✨'];
+        const heartCount = isMobile ? 10 : 15;
 
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < heartCount; i++) {
             const h = document.createElement('div');
             h.className = 'floating-heart';
             h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];

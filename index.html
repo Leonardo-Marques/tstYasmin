@@ -2,24 +2,30 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a1a0f">
+    <meta property="og:title" content="Tenho uma pergunta pra voce...">
+    <meta property="og:description" content="Clica pra descobrir 💚">
+    <meta property="og:type" content="website">
     <title>Uma pergunta pra voce...</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #0a1a0f 0%, #1a3a2a 50%, #0d2818 100%);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
             overflow: hidden;
             position: relative;
+            touch-action: manipulation;
         }
 
         .particles {
@@ -50,16 +56,23 @@
             z-index: 1;
             background: rgba(20, 45, 30, 0.85);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(80, 220, 130, 0.2);
             border-radius: 24px;
-            padding: 48px 56px;
+            padding: 40px 28px;
             text-align: center;
             box-shadow:
                 0 0 60px rgba(50, 180, 100, 0.1),
                 0 25px 50px rgba(0, 0, 0, 0.4);
-            max-width: 480px;
-            width: 90%;
+            max-width: 420px;
+            width: calc(100% - 32px);
             animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @media (min-width: 480px) {
+            .card {
+                padding: 48px 56px;
+            }
         }
 
         @keyframes cardIn {
@@ -68,8 +81,8 @@
         }
 
         .heart-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 44px;
+            margin-bottom: 12px;
             display: inline-block;
             animation: pulse 1.5s ease-in-out infinite;
         }
@@ -81,35 +94,39 @@
 
         h1 {
             color: #e0fff0;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             line-height: 1.3;
+        }
+
+        @media (min-width: 480px) {
+            h1 { font-size: 28px; }
         }
 
         .subtitle {
             color: rgba(180, 230, 200, 0.7);
-            font-size: 15px;
-            margin-bottom: 40px;
+            font-size: 14px;
+            margin-bottom: 32px;
         }
 
         .buttons {
             display: flex;
-            gap: 20px;
             justify-content: center;
             align-items: center;
-            min-height: 60px;
+            min-height: 56px;
         }
 
         .btn {
-            padding: 14px 40px;
+            padding: 16px 44px;
             border: none;
             border-radius: 14px;
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             letter-spacing: 0.3px;
+            -webkit-appearance: none;
         }
 
         .btn-yes {
@@ -126,9 +143,8 @@
             50% { box-shadow: 0 4px 30px rgba(52, 211, 153, 0.5), 0 0 0 8px rgba(52, 211, 153, 0.1); }
         }
 
-        .btn-yes:hover {
-            transform: scale(1.08);
-            box-shadow: 0 6px 30px rgba(52, 211, 153, 0.5);
+        .btn-yes:active {
+            transform: scale(0.96);
         }
 
         .btn-no {
@@ -139,6 +155,8 @@
             z-index: 999;
             transition: none;
             user-select: none;
+            padding: 14px 32px;
+            font-size: 16px;
         }
 
         .glow-ring {
@@ -170,9 +188,11 @@
     <button class="btn btn-no" id="btnNo">Nao</button>
 
     <script>
-        // Particles
+        // Particles (menos no mobile pra performance)
+        const isMobile = window.innerWidth < 600;
         const container = document.getElementById('particles');
-        for (let i = 0; i < 30; i++) {
+        const particleCount = isMobile ? 15 : 30;
+        for (let i = 0; i < particleCount; i++) {
             const p = document.createElement('div');
             p.className = 'particle';
             p.style.left = Math.random() * 100 + '%';
@@ -184,10 +204,11 @@
 
         // Runaway button
         const btnNo = document.getElementById('btnNo');
+        const btnYes = document.getElementById('btnYes');
         let escapeCount = 0;
 
         function rectsOverlap(x, y, w, h, rect) {
-            const safeMargin = 40;
+            const safeMargin = 60;
             return !(x + w < rect.left - safeMargin ||
                      x > rect.right + safeMargin ||
                      y + h < rect.top - safeMargin ||
@@ -195,13 +216,12 @@
         }
 
         function moveButton() {
-            const btnYes = document.querySelector('.btn-yes');
             const yesRect = btnYes.getBoundingClientRect();
             const vw = window.innerWidth;
             const vh = window.innerHeight;
             const bw = btnNo.offsetWidth;
             const bh = btnNo.offsetHeight;
-            const margin = 20;
+            const margin = 16;
 
             const maxX = vw - bw - margin;
             const maxY = vh - bh - margin;
@@ -214,10 +234,8 @@
                 attempts++;
             } while (rectsOverlap(newX, newY, bw, bh, yesRect) && attempts < 100);
 
-            btnNo.style.position = 'fixed';
             btnNo.style.left = newX + 'px';
             btnNo.style.top = newY + 'px';
-            btnNo.style.zIndex = '999';
 
             escapeCount++;
 
@@ -229,18 +247,22 @@
             btnNo.textContent = messages[Math.min(escapeCount, messages.length - 1)];
         }
 
-        // Posiciona o botao "Nao" logo ao carregar, longe do "Sim"
+        // Posiciona ao carregar
         window.addEventListener('load', function() {
             moveButton();
             escapeCount = 0;
             btnNo.textContent = 'Nao';
         });
 
+        // Mouse (desktop)
         btnNo.addEventListener('mouseenter', moveButton);
+
+        // Touch (mobile) - move ao tocar, nao ao soltar
         btnNo.addEventListener('touchstart', function(e) {
             e.preventDefault();
+            e.stopPropagation();
             moveButton();
-        });
+        }, { passive: false });
     </script>
 </body>
 </html>
