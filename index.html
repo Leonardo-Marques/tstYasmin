@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uma pergunta pra voce...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a1a0f 0%, #1a3a2a 50%, #0d2818 100%);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(80, 220, 130, 0.3);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        .card {
+            position: relative;
+            z-index: 1;
+            background: rgba(20, 45, 30, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(80, 220, 130, 0.2);
+            border-radius: 24px;
+            padding: 48px 56px;
+            text-align: center;
+            box-shadow:
+                0 0 60px rgba(50, 180, 100, 0.1),
+                0 25px 50px rgba(0, 0, 0, 0.4);
+            max-width: 480px;
+            width: 90%;
+            animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .heart-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: inline-block;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        h1 {
+            color: #e0fff0;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            color: rgba(180, 230, 200, 0.7);
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            min-height: 60px;
+        }
+
+        .btn {
+            padding: 14px 40px;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: 0.3px;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #34d399, #10b981, #059669);
+            color: #022c22;
+            box-shadow:
+                0 4px 20px rgba(52, 211, 153, 0.35),
+                0 0 0 0 rgba(52, 211, 153, 0.4);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(52, 211, 153, 0.35), 0 0 0 0 rgba(52, 211, 153, 0.4); }
+            50% { box-shadow: 0 4px 30px rgba(52, 211, 153, 0.5), 0 0 0 8px rgba(52, 211, 153, 0.1); }
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 30px rgba(52, 211, 153, 0.5);
+        }
+
+        .btn-no {
+            background: rgba(80, 120, 95, 0.3);
+            color: rgba(180, 230, 200, 0.8);
+            border: 1px solid rgba(80, 220, 130, 0.2);
+            position: fixed;
+            z-index: 999;
+            transition: none;
+            user-select: none;
+        }
+
+        .glow-ring {
+            position: absolute;
+            inset: -2px;
+            border-radius: 26px;
+            background: conic-gradient(from 0deg, transparent, rgba(52, 211, 153, 0.15), transparent, rgba(52, 211, 153, 0.1), transparent);
+            animation: spin 6s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="card">
+        <div class="glow-ring"></div>
+        <div class="heart-icon">💚</div>
+        <h1>Voce quer sair comigo?</h1>
+        <p class="subtitle">Escolha com sabedoria...</p>
+        <div class="buttons">
+            <button class="btn btn-yes" id="btnYes" onclick="window.location.href='sim.html'">Sim!</button>
+        </div>
+    </div>
+    <button class="btn btn-no" id="btnNo">Nao</button>
+
+    <script>
+        // Particles
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (4 + Math.random() * 6) + 's';
+            p.style.animationDelay = (Math.random() * 6) + 's';
+            p.style.width = p.style.height = (3 + Math.random() * 5) + 'px';
+            container.appendChild(p);
+        }
+
+        // Runaway button
+        const btnNo = document.getElementById('btnNo');
+        let escapeCount = 0;
+
+        function rectsOverlap(x, y, w, h, rect) {
+            const safeMargin = 40;
+            return !(x + w < rect.left - safeMargin ||
+                     x > rect.right + safeMargin ||
+                     y + h < rect.top - safeMargin ||
+                     y > rect.bottom + safeMargin);
+        }
+
+        function moveButton() {
+            const btnYes = document.querySelector('.btn-yes');
+            const yesRect = btnYes.getBoundingClientRect();
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const bw = btnNo.offsetWidth;
+            const bh = btnNo.offsetHeight;
+            const margin = 20;
+
+            const maxX = vw - bw - margin;
+            const maxY = vh - bh - margin;
+
+            let newX, newY;
+            let attempts = 0;
+            do {
+                newX = margin + Math.random() * (maxX - margin);
+                newY = margin + Math.random() * (maxY - margin);
+                attempts++;
+            } while (rectsOverlap(newX, newY, bw, bh, yesRect) && attempts < 100);
+
+            btnNo.style.position = 'fixed';
+            btnNo.style.left = newX + 'px';
+            btnNo.style.top = newY + 'px';
+            btnNo.style.zIndex = '999';
+
+            escapeCount++;
+
+            const messages = [
+                'Nao', 'Tem certeza?', 'Pensa melhor...', 'Nao vai rolar!',
+                'Tenta de novo', 'Impossivel!', 'Desiste!', 'Clica no Sim!',
+                'Eu sou rapido!', 'Hahaha', 'Sem chance!'
+            ];
+            btnNo.textContent = messages[Math.min(escapeCount, messages.length - 1)];
+        }
+
+        // Posiciona o botao "Nao" logo ao carregar, longe do "Sim"
+        window.addEventListener('load', function() {
+            moveButton();
+            escapeCount = 0;
+            btnNo.textContent = 'Nao';
+        });
+
+        btnNo.addEventListener('mouseenter', moveButton);
+        btnNo.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            moveButton();
+        });
+    </script>
+</body>
+</html>
